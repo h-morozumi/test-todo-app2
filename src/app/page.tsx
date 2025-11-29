@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 interface Todo {
-  id: number;
+  id: string;
   text: string;
   completed: boolean;
 }
@@ -16,7 +16,7 @@ export default function Home() {
     if (inputValue.trim() === "") return;
     
     const newTodo: Todo = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       text: inputValue.trim(),
       completed: false,
     };
@@ -25,7 +25,7 @@ export default function Home() {
     setInputValue("");
   };
 
-  const toggleTodo = (id: number) => {
+  const toggleTodo = (id: string) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -33,7 +33,7 @@ export default function Home() {
     );
   };
 
-  const deleteTodo = (id: number) => {
+  const deleteTodo = (id: string) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
