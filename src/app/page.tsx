@@ -6,11 +6,13 @@ interface Todo {
   id: string;
   text: string;
   completed: boolean;
+  deadline?: string;
 }
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [deadlineValue, setDeadlineValue] = useState("");
 
   const addTodo = () => {
     if (inputValue.trim() === "") return;
@@ -19,10 +21,12 @@ export default function Home() {
       id: crypto.randomUUID(),
       text: inputValue.trim(),
       completed: false,
+      deadline: deadlineValue || undefined,
     };
     
     setTodos([...todos, newTodo]);
     setInputValue("");
+    setDeadlineValue("");
   };
 
   const toggleTodo = (id: string) => {
@@ -52,21 +56,35 @@ export default function Home() {
           </h1>
 
           {/* Input Section */}
-          <div className="flex gap-2 mb-6">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Add a new task..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800 placeholder-gray-400"
-            />
-            <button
-              onClick={addTodo}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
-            >
-              Add
-            </button>
+          <div className="flex flex-col gap-2 mb-6">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Add a new task..."
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800 placeholder-gray-400"
+              />
+              <button
+                onClick={addTodo}
+                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <label htmlFor="deadline" className="text-sm text-gray-600">
+                Deadline:
+              </label>
+              <input
+                type="date"
+                id="deadline"
+                value={deadlineValue}
+                onChange={(e) => setDeadlineValue(e.target.value)}
+                className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-800"
+              />
+            </div>
           </div>
 
           {/* Todo List */}
@@ -87,15 +105,22 @@ export default function Home() {
                     onChange={() => toggleTodo(todo.id)}
                     className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
                   />
-                  <span
-                    className={`flex-1 ${
-                      todo.completed
-                        ? "line-through text-gray-400"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {todo.text}
-                  </span>
+                  <div className="flex-1">
+                    <span
+                      className={`${
+                        todo.completed
+                          ? "line-through text-gray-400"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {todo.text}
+                    </span>
+                    {todo.deadline && (
+                      <span className="ml-2 text-sm text-gray-500">
+                        (Deadline: {new Date(todo.deadline).toLocaleDateString()})
+                      </span>
+                    )}
+                  </div>
                   <button
                     onClick={() => deleteTodo(todo.id)}
                     className="px-3 py-1 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
