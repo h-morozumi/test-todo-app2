@@ -117,7 +117,7 @@ export default function Home() {
                     </span>
                     {todo.deadline && (
                       <span className="ml-2 text-sm text-gray-500">
-                        (Deadline: {todo.deadline})
+                        (Deadline: {new Date(todo.deadline).toLocaleDateString()})
                       </span>
                     )}
                   </div>
